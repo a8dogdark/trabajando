@@ -1,3 +1,10 @@
+PAGE 1   IOMAC.LIB -- OSS system I/O mac
+ros
+
+
+
+
+
                 0100 ; SAVE #D:ENSAMBLA.MAC
                 0110 ; ASM,,#D2:T.XEX
                 0115 ;
@@ -80,7 +87,7 @@
     =02E2       0810 INITADR = $02E2 ; ATARI LOAD/INIT ADR
     =02E0       0820 GOADR = $02E0   ; ATARI LOAD/GO ADR
     =BFFA       0830 CARTLOC = $BFFA ; CARTRIDGE RUN LOCATION
-    =E456       0840 CIO =   $E456   ; CIO ENTRY ADR
+    =E456       0840 CIO =   $E456   ;CIO ENTRY ADR
     =009B       0850 EOL =   $9B     ; END OF LINE CHAR
                 0860 ;
                 0870 ;  CP/A FUNCTION AND VALUE DISPLACEMSNT
@@ -107,8 +114,6 @@
                 1080 ;
 0350            1090     *=  SAVEPC  ; RESTORE PC
                 1100 ;
-
-;******* IOMAC.LIB                
                 0180     .INCLUDE #D:IOMAC.LIB
                 0100     .TITLE "IOMAC.LIB -- OSS system I/O macros"
                 0110     .PAGE "   Support Macros"
@@ -230,7 +235,7 @@
                 1270         STA ICAUX1,X
                 1280         STA ICAUX2,X
                 1290         .ENDIF
-                1300       .IF %0=2 .OR %0=4
+                1300       .IF %0=2 .OR%0=4
                 1310          @FL  "S:"
                 1320         .ELSE
                 1330 @@IO    .=  %0
@@ -366,7 +371,7 @@
                 2630       .ENDIF
                 2640     .ENDM
                 2650 ;
-                2660     .PAGE "   INPUT
+                2660     .PAGE "   INPUT macro"
                 2670 ;
                 2680 ; MACRO:  INPUT
                 2690 ;
@@ -411,10 +416,8 @@
                 3080       .ENDIF
                 3090     .ENDM
                 3100 ;
-                3110 ;;;;;;;;;;; END OF IOMAC.LIB ;;;;;;;;;;;;
+                3110 ;;;;;;;;;;; END OFIOMAC.LIB ;;;;;;;;;;;;
                 3120 ;
-
-;************** ROM A RAM *******************
                 0185     .INCLUDE #D:ROMRAM.MAC
                 0100 ;   .OPT NO LIST
                 0110 ;
@@ -465,8 +468,6 @@
 0639 60         0560     RTS
 063A            0570     *=  INITAD
 02E2 0006       0580     .WORD ROMRAM.INICIO
-
-;***************** PAL.MAC ***************
                 0187     .INCLUDE #D:PAL.MAC
                 0100 ;   .OPT NO LIST
                 0110 ;
@@ -482,7 +483,7 @@
 0600            0210 DETECTA.PAL
 0600 AD0BD4     0220     LDA VCOUNT
 0603 C964       0230     CMP #100
-0605 D0F9       0240     BNE DETECTA.PAL  ;BUSCA SCANLINE 100
+0605 D0F9       0240     BNE DETECTA.PAL ;BUSCA SCANLINE 100
 0607 A902       0250     LDA #2
 0609 8D1C02     0260     STA CDTMV3  ; 2 BARRIDOS DE PANTALLA
 060C A900       0270     LDA #$00
@@ -501,8 +502,6 @@
 0623 60         0400     RTS
                 0410 ;
                 0420 ;
-
-;**************** TENIS1.MAC *************
                 0190     .INCLUDE #D:TENIS1.MAC
                 0100 ;SAVE#D:TENIS1.MAC
     =00B3       0110 TURBO = $B3
@@ -1462,13 +1461,13 @@ BB3F            0320     *=  $8000
 84F9 8D8FFE     5426     STA $FE8F
 84FC A98A       5427     LDA #$8A
 84FE 8D90FE     5428     STA $FE90
-                5429 ; QUEDAMOS CON IRGDE 14 SEGUNDOS
+                5429 ; QUEDAMOS CON IRG DE 14 SEGUNDOS
                 5430 ;   LDA #$EA
                 5440 ;   STA 64881
                 5450 ;   STA 64882
 8501 20C884     5451     JSR IRG.100
                 5457 ;
-                5458 ; IRG CORTO DE 100MILISEGUNDOS
+                5458 ; IRG CORTO DE 100 MILISEGUNDOS
                 5459 ;
 8504 A960       5460     LDA #$60
 8506 8DFCFD     5470     STA 65020   ; NO BEEP BEEP!
@@ -1560,9 +1559,11 @@ BB3F            0320     *=  $8000
 8580 20FD81     5650     JSR SUBDIRECTORIO
 8583 202881     5660     JSR SUBREAD
 8586            5670 OTRACOPIA
-                5680      PRINT  0,"} RETURN PARA COMENZAR GRABACION"
+                5680      PRINT  0,"}
+RETURN PARA COMENZAR GRABACION"
     =0000      M         .IF %0<1 .OR %0>3
-               M           .ERROR "PRINT: wrong number of parameters"
+               M           .ERROR "PRINT
+: wrong number of parameters"
                M           .ELSE
     =0001      M           .IF %0>1
     =0001      M             .IF %2<128
@@ -1883,8 +1884,7 @@ BB3F            0320     *=  $8000
 87AB 207CFE     7930     JSR $FE7C
 87AE 4CD6FD     7940     JMP $FDD6
 87B1            7950     *=  $02E0
-02E0 D984       7960     .WORD INICIOPRO
-GRAMA
+02E0 D984       7960     .WORD INICIOPROGRAMA
     =003B       7970 EORLEN = FINFIRST-AEOREAR+1
     =037D       7980 ADR =   $0380-3
     =03FF       7990 RESTABYTE = $03FF
@@ -2226,7 +2226,7 @@ A19D            010090   *=  $7000-4
 70D2 8D0FD2     011040   STA $D20F
 70D5 A228       011050   LDX #$28    ; VALOR ORIGINAL: 4
 70D7 A462       011051   LDY PALNTS
-70D9 F002       011052   BEQ LOOPLINEA.NTSC
+70D9 F002       011052   BEQ LOOPLINEA.NSC
 70DB A221       011053   LDX #$21
 70DD            011054 LOOPLINEA.NTSC
 70DD AC0BD4     011060   LDY $D40B
@@ -2496,12 +2496,8 @@ A19D            010090   *=  $7000-4
 2246 A240       013160   LDX #$40
 2248 4C0922     013170   JMP REENTRE
 224B            013180 FINBLKFALSO
-
-
-;********** TENIS2.MAC ***************
                 0200     .INCLUDE #D:TENIS2.MAC
                 0100 ; SAVE#D:TENIS2.MAC
-
 224B            0110     *=  $3000
 3000            0120 BLKDOS
 3000 5555       0130     .BYTE $55,$55
@@ -2859,7 +2855,6 @@ A19D            010090   *=  $7000-4
 3308 A59A
 330A            3190 BLK
 330A 90909080   3200     .SBYTE "000   "
-
 330E 8080
 3310 AAAAAAAA   3210     .BYTE "********************"
 3314 AAAAAAAA
@@ -2917,8 +2912,7 @@ ROR+SET
 33B7 42         3380     .BYTE 64+2
 33B8 38CD       3390     .WORD MENSAJEER
 ROR+SET
-33BA 02707070   3400     .BYTE 2,112,112,112,112,112,112,112,112,112,112,112,112,1
-12,112,112,112
+33BA 02707070   3400     .BYTE 2,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112
 33BE 70707070
 33C2 70707070
 33C6 70707070
@@ -2935,8 +2929,7 @@ ROR+SET
 33DB 70707070
 33DF 70
 33E0            3500 AQUIJUMP
-33E0 70707070   3510     .BYTE 112,112,112,112,112,112,112,112,112,112,112,112,112
-,112,112,112,0
+33E0 70707070   3510     .BYTE 112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,112,0
 33E4 70707070
 33E8 70707070
 33EC 70707070
@@ -3739,6 +3732,8 @@ ROR+SET
 45FC            011360 FIN
 45FC            011370   .END
 
+*** ASSEMBLY ERRORS: 0   15434 BYTES FREE
+
 =0005 @@IO          %2155 @CH
 %2195 @CV
  8216 @F            %21BB @FL
@@ -3812,15 +3807,20 @@ ROR+SET
 =0021 CPFNAM        =0003 CPGNFN
 =0025 CPOINT        =0023 CPRO
 
-=0009 CPTXTR        =0020 CREN=000D CSTAT          33F2 CUALPANTALLA
+=0009 CPTXTR        =0020 CREN
+=000D CSTAT          33F2 CUALPANTALLA
+
 =0024 CUNP
- 21E9 DATA           A178 DATA1 A184 DATA2
+ 21E9 DATA           A178 DATA1
+ A184 DATA2
  A190 DATAFALSA      21CA DATALAST
  70F3 DATATRAMPA     A058 DATIX1
- 8737 DECBELLO       4288 DECREX 4380 DECREY        =000C DESDE
- 0600 DETECTA.PAL    0611 DETECTA.PAL.LOOP          0621 DETECTA.PAL.NT
-SC
- 061F DETECTA.PAL.SI.PAL
+
+ 8737 DECBELLO       4288 DECREX
+ 4380 DECREY        =000C DESDE
+
+ 0600 DETECTA.PAL    0611 DETECTA.PAL.LOOP                   
+ 0621 DETECTA.PAL.NTSC  061F DETECTA.PAL.SI.PAL
  45F9 DEVICE         4131 DIBP1
 
 =9C83 DIF            8229 DIRECTORIO
@@ -3917,7 +3917,7 @@ SC
 
  44F2 INICIOBOOT     84D9 INICIOPROGRAMA
                      851D INICIOPROGRAMA.LOOP
- 8527 INICIOPROGRAMA.LOOP2
+                     8527 INICIOPROGRAMA.LOOP2
 =02E2 INITAD        =02E2 INITADR
 
 %269F INPUT          320C INTERRUPCION
@@ -4053,7 +4053,8 @@ SC
  A134 PRIMERBLOQUE.NTSC
 
 %2585 PRINT         =F2B0 PRINTBYTE
-=CC00 PROGRAMA       4530 PROGRAMAENMEMORIA
+=CC00 PROGRAMA       4530 PROGRAMAENMEMO
+RIA
 =00CB PT.1           83C9 PUNTO
 
  82C9 QUEAPRETO?     322F QUEBLK
