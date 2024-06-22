@@ -2,13 +2,13 @@
 ;* TENIS 01 *
 ;************
 TURBO = $B3
-    *=  $D301
+    ORG $D301
     .BYTE $FE
-    *=  $BC20
+    ORG $BC20
     .BYTE 1
     .WORD NEWDL
 VOLVERE
-    *=  $BB00
+    ORG $BB00
 NEWDL
     .BYTE 112,112,66
     .WORD LINE0
@@ -24,7 +24,7 @@ CON .SB "CON"
 SIN .SB "SIN"
 SECTOR .BYTE "000",$9B
 FACTOR .BYTE "2.3",$9B
-    *=  $8000
+    ORG $8000
 MENSAJE.NTSC
     .SB "NTSC"
 MENSAJE.PAL
@@ -931,13 +931,12 @@ FILLBUFFER
     LDA #$FE
     JSR $FE7C
     JMP $FDD6
-    *=  $02E0
-    .WORD INICIOPROGRAMA
+    RUN INICIOPROGRAMA
 EORLEN = FINFIRST-AEOREAR+1
 ADR =   $0380-3
 RESTABYTE = $03FF
 DIF =   $A000-ADR
-    *=  ADR+DIF
+    ORG  ADR+DIF
 AGRABAR
     .BYTE $55,$55
     .BYTE $FA
@@ -1004,9 +1003,9 @@ DATIX1
     .WORD FINBLKFALSO-BLKFALSO
     .BYTE $00
     .BYTE $80
-    *=  $03EA+DIF
+    ORG  $03EA+DIF
     .BYTE $00
-    *=  AGRABAR+$84
+    ORG  AGRABAR+$84
 GRABABLKUNO
     LDA FEOR
     BEQ EORNOLISTO
@@ -1164,7 +1163,7 @@ DATAFALSA
     .BYTE 0,$80
 SUMABYTE
     .BYTE $FA
-    *=  $7000-4
+    ORG  $7000-4
 TRAMPA
     .BYTE $55,$55,$FC
     .BYTE $01
@@ -1216,7 +1215,7 @@ DLTRAMPA
     .BYTE 65
 TEXTOTRAMPA
     .SB "    turbo SOFTWARE    "
-    *=  $707F
+    ORG  $707F
 CHEQUEO
     .BYTE 0
 FCHK
@@ -1291,7 +1290,7 @@ DATATRAMPA
     .BYTE $23,$00
     .WORD $83
     .BYTE $00,$80
-    *=  $2000
+    ORG  $2000
 BLKFALSO
     .BYTE $55,$55
     TYA
@@ -1501,7 +1500,7 @@ FINBLKFALSO
 ;* TENIS 02 *
 ;************
 
-    *=  $3000
+    ORG  $3000
 BLKDOS
     .BYTE $55,$55
 ORIGEN = $3000
@@ -1850,7 +1849,7 @@ CUALPANTALLA
     .WORD DISPLIST+SET
 BUFFER
 FINBLKDOS
-    *=  $4000
+    ORG  $4000
 GAMEA
 Z   =   $D800-*
     LDA # <GAME1A+Z
