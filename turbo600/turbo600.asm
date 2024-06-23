@@ -197,7 +197,7 @@ FINCARGA
     STA LASTCANT+1
     STA FRO+1
     LDX #$02
-    LDA #'0-32'
+    LDA #$90    ;'0-32'
 VUELVEA0
     STA PABONITO,X
     LDY FEOR
@@ -284,7 +284,7 @@ NOEORFF3
 NOQUEDANMAS
     JMP SUBCLOSE
 SUBDIRECTORIO
-    LDA #'}'
+    LDA #$7D    ;'}'
     JSR PRINTBYTE
      OPEN  1,6,0,"D:*.*"
 DIRECTORIO
@@ -330,7 +330,7 @@ NOOTRO
     LDX #$00
     LDY #$02
     LDA LINE0,Y
-    CMP #'C-32'
+    CMP #$A3    ;'C-32'
     BEQ PONSINSUB
 PONCONSUB
     LDA CON,X
@@ -364,10 +364,9 @@ NOCSUB
     CMP #40
     BNE NOCRES
     LDX #$00
-;   LDY #28
-    LDY #25
+    LDY #$19
     LDA LINE0,Y
-    CMP #'C-32'
+    CMP #$A3    ;'C-32'
     BEQ PONSINRES
 PONCONRES
     LDA CON,X
@@ -398,7 +397,7 @@ NOEOR29D
     BNE PONSINRES
     JMP QUEAPRETO?
 NOCRES
-    CMP #15
+    CMP #$0F    ;15
     BNE NOUPALE
     JSR INVERSO
     CLC
@@ -454,7 +453,7 @@ ESTAFILE
     BNE ESTAFILE
 PUNTO
     LDY #$0C
-    LDA #'.'
+    LDA #$2E    ;'.'
     STA NOMBRE,X
     INX
 LOPUNTO
@@ -479,7 +478,7 @@ LOINVIERTO
     CPY #$03
     BNE LOINVIERTO
     LDY #$02
-    LDA #'0-32'
+    LDA #$90 ;'0-32'
 BORREC
     STA C?,Y
     DEY
@@ -688,11 +687,11 @@ FINBELISIMO
     LDA #$FF
     STA 764
     JSR GETBYTE
-    CMP #'?'
+    CMP #$1B    ;'?'
     BNE NOCAMBIADISCO
     JMP CAMBIADISCO
 NOCAMBIADISCO
-    LDA #'}'
+    LDA #$7D    ;'}'
     JSR $F2B0
     LDY #215
     LDX #$00
@@ -721,14 +720,14 @@ NUEVEBLKS1
     LDA ($58),Y
     CLC
     ADC #$01
-    CMP #'9-31'
+    CMP #$9A    ;'9-31'
     BEQ NUEVE9
     STA ($58),Y
     DEX
     BPL NUEVEBLKS
     BMI FINNUEVE
 NUEVE9
-    LDA #'0-32'
+    LDA #$90    ;'0-32'
     STA ($58),Y
     DEY
     CPY #214
@@ -744,10 +743,10 @@ FINNUEVE
     LDA #$EA
     STA $FD71
     STA $FD72   ; DESHABILITA LEAD
-    LDA #$00-210
+    LDA #$2E    ;$00-210
     LDX PALNTS
     BEQ BLKUNO.NTSC
-    LDA #$00-175
+    LDA #$51    ;$00-175
 BLKUNO.NTSC
     STA 20
 BLKUNO.LOOP
@@ -763,11 +762,10 @@ BLKUNO.LOOP
     LDA # >FIN-GAMEA
     STA CANTW+1
     JSR WRITETOCASSETTE
-;   LDA #$00-8
-    LDA #$00-156
+    LDA #$64    ;$00-156
     LDX PALNTS
     BEQ BLK2.NTSC
-    LDA #$00-130
+    LDA #$7E    ;$00-130
 BLK2.NTSC
     STA 20
 W1SEG
@@ -784,11 +782,10 @@ W1SEG
     LDA #$04
     STA BANCO
     JSR WRITETOCASSETTE
-;   LDA #$00-8
-    LDA #$00-52
+    LDA #$CC    ;$00-52
     LDY PALNTS
     BEQ LOPLEAD1.NTSC
-    LDA #$00-43
+    LDA #$D5    ;$00-43
 LOPLEAD1.NTSC
     STA 20
 LOPLEAD1
