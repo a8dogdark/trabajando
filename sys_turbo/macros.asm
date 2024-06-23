@@ -9,9 +9,9 @@
             LDX #:1*16
             LDA #$09
             STA ICCOM,X
-            LDA # <$2
+            LDA # <:2
             STA ICBADR,X
-            LDA # >$2
+            LDA # >:2
             STA ICBADR+1,X
             LDA #$FF
             STA ICBLEN,X
@@ -45,9 +45,9 @@
             STA ICAUX1,X
             LDA #:3
             STA ICAUX2,X
-            LDA #<:$4
+            LDA #<:4
             STA ICBADR,X
-            LDA #>:$4
+            LDA #>:4
             STA ICBADR+1,X
             JSR CIO
         .ENDIF
