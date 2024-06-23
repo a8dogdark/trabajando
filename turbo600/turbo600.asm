@@ -1,3 +1,7 @@
+    ICL '../sys_turbo/sistema.asm'
+    ICL '../sys_turbo/macros.asm'
+    ICL '../sys_turbo/romram.asm'
+    ICL '../sys_turbo/pal.asm'
 ;************
 ;* TENIS 01 *
 ;************
@@ -10,27 +14,33 @@ TURBO = $B3
 VOLVERE
     ORG $BB00
 NEWDL
-    .BYTE 112,112,66
+    .BYTE $70,$70,$42  ;112,112,66
     .WORD LINE0
-    .BYTE 48,1
+    .BYTE $30,$01   ;48,1
     .WORD VOLVERE
 LINE0
-    .SB "  CON Subrutina    C-"
+    .SB +128,"  CON "
+    .SB "S"
+    .SB +128,"ubrutina    C-"
 C?
-    .SB "000 SIN Reset  "
+    .SB +128,"000 SIN "
+    .SB "R"
+    .SB +128,"eset  "
 MENSAJE.TV
-    .SB "    "
-CON .SB "CON"
-SIN .SB "SIN"
-SECTOR .BYTE "000",$9B
-FACTOR .BYTE "2.3",$9B
+    .SB +128,"    "
+CON .SB +128,"CON"
+SIN .SB +128,"SIN"
+SECTOR  .BY "000",$9B
+FACTOR  .BY "2.3",$9B
+
+;****** 8000 ******
     ORG $8000
 MENSAJE.NTSC
-    .SB "NTSC"
+    .SB +128,"NTSC"
 MENSAJE.PAL
-    .SB "PAL "
-EORBYTE .BYTE $00
-BYTEMULA .BYTE $00
+    .SB +128,"PAL "
+EORBYTE .BY $00
+BYTEMULA .BY $00
 CANTR .WORD $4000
 CANTW .WORD $4000
 LASTCANT .WORD $4000
@@ -39,10 +49,10 @@ HASTA = $0E
 FRO =   $D4
 RAM =   $CB
 ROM =   $CD
-FEOR .BYTE 0
-FEOF .BYTE 0
-BANCO .BYTE 0
-GUARDABANCO .BYTE 0
+FEOR .BY 0
+FEOF .BY 0
+BANCO .BY 0
+GUARDABANCO .BY 0
 SUB
     JSR USERSUB+Z
 SINRES
@@ -51,9 +61,10 @@ CONRES
     JMP ($FFFC)
 SET =   PROGRAMA-RAMPROG
 STRING
-    .BYTE "D1:"
+    .BY 'D1:'
 NOMBRE
-    *=  *+20
+    .SB "                    "
+
 PABONITO
     .SB "000  BLOQUES A GRABAR "
 GRABAMULA
@@ -63,55 +74,33 @@ GRABAMULA
     DEX
 GRABAMULA.1
     JSR GRABAMULA.WAIT
-    LDA #139
+    LDA #$8B
     STA $D20F
-    LDX #8
-;   STA BYTEMULA
+    LDX #$08
     LDY PALNTS
     BEQ GRABAMULA.2
     DEX
 GRABAMULA.2
     JSR GRABAMULA.WAIT
-    LDA #11
+    LDA #$0B
     STA $D20F
-    LDX #16
+    LDX #$10
     LDY PALNTS
-;   JSR LINEA10?
     BEQ GRABAMULA.3
-    LDX #13
+    LDX #$0D
 GRABAMULA.3
     JSR GRABAMULA.WAIT
-    LDA #139
+    LDA #$8B
     STA $D20F
-    LDX #47
+    LDX #$2F
     LDY PALNTS
     BEQ GRABAMULA.4
-;   LDA #163
-    LDX #39
+    LDX #$27
 GRABAMULA.4
     JSR GRABAMULA.WAIT
-    LDA #11
+    LDA #$0B
     STA $D20F
     RTS
-;
-;
-;
-;   STA $D20F
-;   JSR LINEA10?
-;   LDX #$07
-LOOPMULA
-;   LDA #163
-;   ASL BYTEMULA
-;   BCC MULA0
-;   LDA #35
-MULA0
-;   STA $D20F
-;   JSR LINEA10?
-;   DEX
-;   BPL LOOPMULA
-;   LDA #35
-;   STA $D20F
-;   RTS
 GRABAMULA.WAIT
     JSR LINEA10?
     DEX
@@ -123,7 +112,7 @@ GRABAMULA.WAIT
 ;
 LINEA10?
     LDA $D40B
-    CMP #10
+    CMP #$0A
     BNE LINEA10?
     STA $D40A
     STA $D40A
@@ -147,8 +136,8 @@ NOINCDESDE1
 BANQUEO
     ORA #$08
     CLC
-    ROL A
-    ROL A
+    ROL
+    ROL
     PHA
     LDA #$C3
     AND $D301
@@ -162,7 +151,18 @@ SUBCLOSE
      CLOSE  1
     RTS
 SUBOPEN
-     OPEN  1,4,128,STRING
+    LDX #$10
+    LDA #$03
+    STA ICCOM,X
+    LDA #$04
+    STA ICAUX1,X
+    LDA #$80
+    STA ICAUX2,X
+    LDA #<STRING
+    STA ICBADR,X
+    LDA #>STRING
+    STA ICBADR+1,X
+    JSR CIO
     BPL OPENOK
     JSR SUBCLOSE
     JSR SUBDIRECTORIO
@@ -176,6 +176,10 @@ SUBREAD
     JSR SUBOPEN
     LDA #$04
     STA BANCO
+
+
+
+;desde acá revisar
 LOOPBANCOS
     DEC BANCO
     LDA BANCO
@@ -286,9 +290,9 @@ NOQUEDANMAS
 SUBDIRECTORIO
     LDA #$7D    ;'}'
     JSR PRINTBYTE
-     OPEN  1,6,0,"D:*.*"
+     ;OPEN  1,6,0,"D:*.*"
 DIRECTORIO
-     INPUT  1,NOMBRE
+     ;INPUT  1,NOMBRE
     BMI FINDIRECTORIO
      PRINT  0,NOMBRE
     JMP DIRECTORIO
@@ -655,14 +659,14 @@ INICIOPROGRAMA.LOOP2
     LDA #TURBO
     STA $CF
 CAMBIADISCO
-     PRINT  0,"}  INGRESE DISCO CON FILE A GRABAR"
+     PRINT  0,$7D + "  INGRESE DISCO CON FILE A GRABAR"
     LDA #$FF
     STA 764
     JSR GETBYTE
     JSR SUBDIRECTORIO
     JSR SUBREAD
 OTRACOPIA
-     PRINT  0,"}   RETURN PARA COMENZAR GRABACION"
+     PRINT  0,$7D + "   RETURN PARA COMENZAR GRABACION"
     LDY #130
     LDX #0
 LOOPBONITO
@@ -757,9 +761,9 @@ BLKUNO.LOOP
     STA $0480
     STA $0481
     STA FEOF
-    LDA # <FIN-GAMEA
+    LDA # <(FIN-GAMEA)
     STA CANTW
-    LDA # >FIN-GAMEA
+    LDA # >(FIN-GAMEA)
     STA CANTW+1
     JSR WRITETOCASSETTE
     LDA #$64    ;$00-156
@@ -1520,10 +1524,10 @@ EORBLOCK1
     STA SALTO
     LDA $E45B
     STA SALTO+1
-    LDA # <RAMPROG+SET
+    LDA # <(RAMPROG+SET)
     STA $E45A
     STA ROM
-    LDA # >RAMPROG+SET
+    LDA # >(RAMPROG+SET)
     STA $E45B
     STA ROM+1
     LDA # <RAMPROG
@@ -1585,13 +1589,13 @@ LOOPINTERRUPCION
     STA $0345,X
     JSR $E456
     LDX #$40
-    LDA # <GAMEA+Z
+    LDA # <(GAMEA+Z)
     STA $0344,X
-    LDA # >GAMEA+Z
+    LDA # >(GAMEA+Z)
     STA $0345,X
-    LDA # <FIN-GAMEA
+    LDA # <(FIN-GAMEA)
     STA $0348,X
-    LDA # >FIN-GAMEA
+    LDA # >(FIN-GAMEA)
     STA $0349,X
     LDA #$07
     STA $0342,X
@@ -1674,14 +1678,14 @@ JUSTO
     LDA #$01
     STA ($00),Y
     LDA 561
-    CMP # >DISPLIST+SET
+    CMP # >(DISPLIST+SET)
     BNE NOTENNIS
-    LDA # <DL1+SET
-    LDX # >DL1+SET
+    LDA # <(DL1+SET)
+    LDX # >(DL1+SET)
     BNE SITENNIS
 NOTENNIS
-    LDA # <DL2+SET
-    LDX # >DL2+SET
+    LDA # <(DL2+SET)
+    LDX # >(DL2+SET)
 SITENNIS
     INY
     STA ($00),Y
@@ -1842,9 +1846,9 @@ FINBLKDOS
     ORG  $4000
 GAMEA
 Z   =   $D800-*
-    LDA # <GAME1A+Z
+    LDA # <(GAME1A+Z)
     STA $CB
-    LDA # >GAME1A+Z
+    LDA # >(GAME1A+Z)
     STA $CC
     LDY #$00
 EOR29LOOP
@@ -1856,10 +1860,10 @@ EOR29LOOP
     INC $CC
 BCC
     LDA $CC
-    CMP # >FIN+Z
+    CMP # >(FIN+Z)
     BNE EOR29LOOP
     LDA $CB
-    CMP # <FIN+Z
+    CMP # <(FIN+Z)
     BNE EOR29LOOP
 GAME1A
     JMP COMIENZOLOAD+Z
@@ -1874,8 +1878,8 @@ READ2
     LDY #$00
     JSR SETCANT+Z
 READ3
-    LDA # <FIN+Z
-    LDY # >FIN+Z
+    LDA # <(FIN+Z)
+    LDY # >(FIN+Z)
 SETPOS
     STA $0344,X
     TYA
@@ -2034,11 +2038,11 @@ DIBP1
 WFORSET
     LDA $D40B
     BMI WFORSET
-    LDA # <VBI+Z
+    LDA # <(VBI+Z)
     STA $0222
-    LDA # >VBI+Z
+    LDA # >(VBI+Z)
     STA $0223
-    JMP OPEN+Z
+    JMP OPENB+Z
 SETPERS
     LDA #2
     STA 623
@@ -2063,11 +2067,11 @@ SELECT .BYTE 0
 JUEGO .BYTE $FF
 SAVEVBI .DBYTE 0
 VBI
-    LDA # >DISPLIST+SET
+    LDA # >(DISPLIST+SET)
     STA $D403
     STA $0244
     STA 561
-    LDA # <DISPLIST+SET
+    LDA # <(DISPLIST+SET)
     STA $D402
     STA 560
     LDA #0
@@ -2190,10 +2194,10 @@ DECREX
     LDA #$AC
     STA $D201
     LDA JOYST
-    LSR A
-    LSR A
-    LSR A
-    LSR A
+    LSR
+    LSR
+    LSR
+    LSR
     CMP #$0F
     BEQ NOIMPULSE1
     LDA #$FF
@@ -2331,10 +2335,10 @@ DWN1
     JSR J1DWN+Z
 JOY2
     LDA JOYST
-    LSR A
-    LSR A
-    LSR A
-    LSR A
+    LSR
+    LSR
+    LSR
+    LSR
     CMP #15
     BEQ EXIT
     CMP #14
@@ -2413,15 +2417,15 @@ LOOPJ2DWN
     INC YPOS1+Z
 FINJ2DWN
     RTS
-OPEN
+OPENB
     LDA #$FF
     STA $0340
     LDX #$10
     LDA #$03
     STA $0342,X
-    LDA # <DEVICE+Z
+    LDA # <(DEVICE+Z)
     STA $0344,X
-    LDA # >DEVICE+Z
+    LDA # >(DEVICE+Z)
     STA $0345,X
     LDA #$04
     STA $034A,X
