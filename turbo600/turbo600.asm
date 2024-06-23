@@ -176,10 +176,6 @@ SUBREAD
     JSR SUBOPEN
     LDA #$04
     STA BANCO
-
-
-
-;desde acá revisar
 LOOPBANCOS
     DEC BANCO
     LDA BANCO
@@ -271,6 +267,11 @@ NOEORFF1
     LDX FEOR
     BEQ NOEORFF2
     EOR #$FF
+
+
+
+
+;revisar desde acá
 NOEORFF2
     STA TENMEBLK+1
     DEY
